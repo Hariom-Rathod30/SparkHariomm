@@ -21,18 +21,14 @@ import {
   ArrowDown,
   ArrowUp,
   Boxes,
-  DollarSign,
   Info,
-  PackageCheck,
+  LineChart as LineChartIcon,
   PackageOpen,
   PieChart as PieChartIcon,
   Recycle,
-  LineChart as LineChartIcon,
   Truck,
 } from "lucide-react"
 import {
-  Bar,
-  BarChart,
   Line,
   LineChart,
   Pie,
@@ -44,10 +40,6 @@ import {
   Legend,
   Cell
 } from "recharts"
-import {
-  ChartContainer,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
 
 const demandForecastData = [
   { date: "Jan", demand: Math.floor(Math.random() * 1000) + 500 },
@@ -65,9 +57,9 @@ const returnStatusData = [
 ]
 
 const stockRelocations = [
-  { id: "TR-834", item: "Smart TV 55\"", from: "Store #2021", to: "Store #5301", status: "In Transit" },
-  { id: "TR-835", item: "Gaming Laptops", from: "WH-04", to: "Store #2021", status: "Delivered" },
-  { id: "TR-836", item: "Air Fryers", from: "Store #1080", to: "WH-02", status: "Pending" },
+  { id: "TR-834", item: "Smart TV 43\"", from: "Store #2021 (Mumbai)", to: "Store #5301 (Pune)", status: "In Transit" },
+  { id: "TR-835", item: "Gaming Laptops", from: "WH-Delhi", to: "Store #2021 (Mumbai)", status: "Delivered" },
+  { id: "TR-836", item: "Air Fryers", from: "Store #1080 (Bangalore)", to: "WH-Chennai", status: "Pending" },
 ]
 
 const chartConfig = {
@@ -79,24 +71,30 @@ const chartConfig = {
 export default function DashboardPage() {
   return (
     <div className="grid gap-6 md:gap-8">
+       <div>
+        <h1 className="text-3xl font-bold font-headline tracking-tight">Unified Inventory Command Center</h1>
+        <p className="text-muted-foreground mt-1">
+         A real-time, AI-driven overview of your entire retail ecosystem, from national supply chains to hyperlocal store shelves.
+        </p>
+      </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 md:gap-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Unified Inventory Command</CardTitle>
+            <CardTitle className="text-sm font-medium">Unified Inventory (Units)</CardTitle>
             <Boxes className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">4,523,189</div>
+            <div className="text-2xl font-bold">12,45,23,189</div>
             <p className="text-xs text-muted-foreground">+20.1% from last month</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Real-time Asset Valuation</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+             <p className="text-sm text-muted-foreground">(₹)</p>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$9,231,890</div>
+            <div className="text-2xl font-bold">₹92,31,890</div>
             <p className="text-xs text-muted-foreground">+18.3% from last month</p>
           </CardContent>
         </Card>
@@ -205,14 +203,14 @@ export default function DashboardPage() {
                   <ArrowUp className="h-4 w-4 text-yellow-500" />
                   <AlertTitle>High Demand Alert</AlertTitle>
                   <AlertDescription>
-                      Zip Code 90210 showing 150% spike in demand for "Organic Dog Food".
+                      Pincode 400050 (Juhu, Mumbai) showing 150% spike in demand for "Premium Cricket Bats".
                   </AlertDescription>
               </Alert>
               <Alert variant="destructive">
                   <ArrowDown className="h-4 w-4" />
                   <AlertTitle>Low Stock Warning</AlertTitle>
                   <AlertDescription>
-                      "Smart TV 55\"" stock is below threshold at Store #1080.
+                      "Smart TV 43\"" stock is below threshold at Store #1080 (Bangalore).
                   </AlertDescription>
               </Alert>
           </CardContent>

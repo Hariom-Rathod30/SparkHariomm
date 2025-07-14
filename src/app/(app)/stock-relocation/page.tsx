@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, Truck, ArrowRight } from "lucide-react"
+import { MoreHorizontal, ArrowRight } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,11 +34,11 @@ import {
 const relocations = [
   {
     id: "TR-901",
-    item: 'Men\'s Graphic Tees',
+    item: 'Men\'s Kurtas',
     sku: '8435-043-32',
     qty: 250,
-    from: 'Warehouse-NV-01',
-    to: 'Store #2021 (LA)',
+    from: 'Warehouse-Delhi-01',
+    to: 'Store #2021 (Mumbai)',
     reason: 'High social media trend',
     status: 'In Transit',
   },
@@ -47,18 +47,18 @@ const relocations = [
     item: 'Air Fryer XL',
     sku: '1125-987-54',
     qty: 75,
-    from: 'Store #1080 (SF)',
-    to: 'Store #5301 (LA)',
+    from: 'Store #1080 (Bangalore)',
+    to: 'Store #5301 (Chennai)',
     reason: 'Local demand spike',
     status: 'Pending',
   },
   {
     id: "TR-903",
-    item: 'Organic Dog Food',
+    item: 'Basmati Rice (5kg)',
     sku: '5543-211-89',
     qty: 400,
-    from: 'Warehouse-AZ-02',
-    to: 'Store #3141 (SD)',
+    from: 'Warehouse-Punjab-02',
+    to: 'Store #3141 (Hyderabad)',
     reason: 'Predicted stockout',
     status: 'Delivered',
   },
@@ -67,28 +67,28 @@ const relocations = [
     item: 'Yoga Mats',
     sku: '6789-345-12',
     qty: 150,
-    from: 'Store #5301 (LA)',
-    to: 'Warehouse-CA-03',
+    from: 'Store #5301 (Chennai)',
+    to: 'Warehouse-BLR-03',
     reason: 'Overstock',
     status: 'Delivered',
   },
   {
     id: "TR-905",
-    item: 'Gaming Laptop 17"',
+    item: 'Gaming Laptop 15"',
     sku: '2345-678-90',
     qty: 30,
-    from: 'Warehouse-NV-01',
-    to: 'Store #2021 (LA)',
+    from: 'Warehouse-Delhi-01',
+    to: 'Store #2021 (Mumbai)',
     reason: 'High demand forecast',
     status: 'In Transit',
   },
    {
     id: "TR-906",
-    item: 'Patio Furniture Set',
+    item: 'Cookware Set',
     sku: '4567-890-12',
     qty: 20,
-    from: 'Warehouse-CA-03',
-    to: 'Store #1080 (SF)',
+    from: 'Warehouse-BLR-03',
+    to: 'Store #1080 (Bangalore)',
     reason: 'Seasonal demand',
     status: 'Pending',
   },
@@ -114,7 +114,7 @@ export default function StockRelocationPage() {
        <div>
         <h1 className="text-3xl font-bold font-headline tracking-tight">Intelligent Stock Balancing</h1>
         <p className="text-muted-foreground mt-1">
-          Proactively move inventory to where it's needed most. Our system identifies demand spikes and overstock situations, automating relocation orders to optimize availability and reduce holding costs.
+          Proactively move inventory to where it's needed most across India. Our system identifies demand spikes and overstock situations, automating relocation orders to optimize availability and reduce holding costs.
         </p>
       </div>
 
