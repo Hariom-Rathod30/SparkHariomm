@@ -51,7 +51,9 @@ Cost Effectiveness Factors: {{{costEffectivenessFactors}}}
 Product Photo: {{media url=photoDataUri}}
 {{/if}}
 
-Based on this information, recommend a disposition (resale, donation, or liquidation) and explain your reasoning. The reasoning should be concise and no more than 40 words.`,
+Based on this information, recommend a disposition (resale, donation, or liquidation) and explain your reasoning. The reasoning should be concise and no more than 40 words.
+
+Respond with a valid JSON object that conforms to the output schema.`,
 });
 
 const returnRouterFlow = ai.defineFlow(

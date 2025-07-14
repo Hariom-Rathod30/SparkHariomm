@@ -33,7 +33,7 @@ export async function dynamicPricer(input: DynamicPricerInput): Promise<DynamicP
 const prompt = ai.definePrompt({
   name: 'dynamicPricerPrompt',
   input: {schema: DynamicPricerInputSchema},
-  output: {schema: DynamicPricerOutputSchema, format: 'json'},
+  output: {schema: DynamicPricerOutputSchema},
   prompt: `You are an expert pricing analyst for a large retail company in India. Your task is to recommend the optimal price for a product based on the provided data.
 
 Analyze the following information to determine a suggested price that balances competitiveness and profitability in the Indian market.
@@ -44,7 +44,9 @@ Product Cost: ₹{{{cost}}}
 Competitor Prices: {{{competitorPrices}}}
 Market Trends: {{{marketTrends}}}
 
-Based on this data, provide a suggested price (in INR) and a brief reasoning for your recommendation. The reasoning should be concise and no more than 40 words.`,
+Based on this data, provide a suggested price (in INR) and a brief reasoning for your recommendation. The reasoning should be concise and no more than 40 words.
+
+Respond with a valid JSON object that conforms to the output schema.`,
 });
 
 const dynamicPricerFlow = ai.defineFlow(

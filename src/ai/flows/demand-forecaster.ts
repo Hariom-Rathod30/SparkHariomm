@@ -34,20 +34,22 @@ export async function demandForecast(input: DemandForecastInput): Promise<Demand
 const prompt = ai.definePrompt({
   name: 'demandForecastPrompt',
   input: {schema: DemandForecastInputSchema},
-  output: {schema: DemandForecastOutputSchema, format: 'json'},
+  output: {schema: DemandForecastOutputSchema},
   prompt: `You are an expert in demand forecasting for the Indian retail market, specializing in predicting demand at the neighborhood level for specific products.
 
   Based on the historical sales data, social media trends, and local event data provided, predict the demand for "{{productName}}" in the given Pincode.
 
   Product Name: {{{productName}}}
   Pincode: {{{zipCode}}}
-  Historical Sales Data: {{{historicalSalesData}}}
+  Historical SalesData: {{{historicalSalesData}}}
   Social Media Trends: {{{socialMediaTrends}}}
   Local Event Data: {{{localEventData}}}
 
   Provide the predicted demand, a confidence level (0-1), and the factors influencing the demand.
   predictedDemand should be a string, be concise, and be no more than 20 words.
   factorsInfluencingDemand should be a string, be concise, and be no more than 30 words.
+  
+  Respond with a valid JSON object that conforms to the output schema.
   `,
 });
 
