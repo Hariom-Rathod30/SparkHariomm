@@ -7,13 +7,22 @@ import type { ReturnRouterOutput } from "@/ai/flows/return-router";
 import { inventoryData, InventoryItem } from "@/lib/inventory-data";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, RotateCw, Wand2, BadgeCheck, HandHeart, Hammer } from "lucide-react";
+import { Loader2, RotateCw, Wand2, BadgeCheck, HandHeart, Hammer, ArrowRight, Truck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+interface Disposition extends ReturnRouterOutput {
+  reroute?: {
+    from: string;
+    to: string;
+    reason: string;
+  }
+}
 
 export default function ReturnRouterPage() {
-  const [disposition, setDisposition] = useState<ReturnRouterOutput | null>(null);
+  const [disposition, setDisposition] = useState<Disposition | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const { toast } = useToast();
@@ -29,17 +38,28 @@ export default function ReturnRouterPage() {
     
     // Simulate AI call with a timeout
     setTimeout(() => {
-        const dummyDisposition: ReturnRouterOutput = {
+        const dummyDisposition: Disposition = {
             disposition: 'resale',
             reasoning: 'Item is in like-new condition and local demand is high. Recommend for immediate resale at 90% of original price.',
+            reroute: {
+                from: "Delhi Returns Center",
+                to: "Store #2021 (Mumbai)",
+                reason: "High demand signal for 'Premium Cricket Bats' detected in Juhu area."
+            }
         };
-        // A bit of logic to make it more dynamic for the demo
+
         if (item.returnInfo?.condition === 'Used - Good') {
             dummyDisposition.disposition = 'resale';
             dummyDisposition.reasoning = 'Minor cosmetic wear but fully functional. High local demand justifies resale at a discounted price.';
+            dummyDisposition.reroute = {
+                from: "Delhi Returns Center",
+                to: "Store #1080 (Bangalore)",
+                reason: `High demand for TVs in Bangalore; ready for immediate resale.`
+            }
         } else if (item.returnInfo?.condition === 'Damaged') {
             dummyDisposition.disposition = 'liquidation';
             dummyDisposition.reasoning = 'Significant damage reported. Liquidation is the most cost-effective path to recover value.';
+            delete dummyDisposition.reroute;
         }
         setDisposition(dummyDisposition);
         setIsLoading(false);
@@ -108,8 +128,8 @@ export default function ReturnRouterPage() {
           </CardContent>
         </Card>
 
-        <div className="lg:col-span-2 sticky top-24">
-          <Card className="min-h-[500px]">
+        <div className="lg:col-span-2 sticky top-24 space-y-8">
+          <Card className="min-h-[300px]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2"><RotateCw className="text-accent"/>Intelligent Return Router</CardTitle>
               <CardDescription>
@@ -118,7 +138,7 @@ export default function ReturnRouterPage() {
             </CardHeader>
             <CardContent className="flex items-center justify-center pt-6">
               {isLoading && (
-                <div className="flex flex-col items-center justify-center h-64 space-y-4">
+                <div className="flex flex-col items-center justify-center h-48 space-y-4">
                   <Loader2 className="h-12 w-12 animate-spin text-primary" />
                   <p className="text-muted-foreground">Analyzing disposition paths...</p>
                 </div>
@@ -133,13 +153,41 @@ export default function ReturnRouterPage() {
                 </div>
               )}
               {!isLoading && !disposition && (
-                  <div className="flex flex-col items-center justify-center h-64 text-center">
+                  <div className="flex flex-col items-center justify-center h-48 text-center">
                       <DispositionIcon type={undefined} />
                       <p className="mt-4 text-muted-foreground">Select a returned item to determine its optimal route.</p>
                   </div>
               )}
             </CardContent>
           </Card>
+
+          {disposition?.reroute && (
+            <Card className="animate-in fade-in-50">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Truck className="text-accent" />Automated Relocation Order</CardTitle>
+                    <CardDescription>This item is being rerouted to meet demand at another location.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
+                        <div className="text-center">
+                            <p className="text-xs text-muted-foreground">From</p>
+                            <p className="font-semibold">{disposition.reroute.from}</p>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-muted-foreground" />
+                        <div className="text-center">
+                            <p className="text-xs text-muted-foreground">To</p>
+                            <p className="font-semibold text-primary">{disposition.reroute.to}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold text-sm">Reason</h4>
+                        <p className="text-sm text-muted-foreground">{disposition.reroute.reason}</p>
+                    </div>
+                    <Button className="w-full">Notify Transport Team</Button>
+                </CardContent>
+            </Card>
+          )}
+
         </div>
       </div>
     </div>
