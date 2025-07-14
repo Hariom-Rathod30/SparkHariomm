@@ -1,68 +1,49 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useState, useMemo } from "react";
 import Image from "next/image";
-import { returnRouter, ReturnRouterOutput } from "@/ai/flows/return-router";
+import { returnRouter, ReturnRouterOutput, ReturnRouterInput } from "@/ai/flows/return-router";
+import { inventoryData, InventoryItem } from "@/lib/inventory-data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, RotateCw, Wand2, UploadCloud, X, BadgeCheck, HandHeart, Hammer } from "lucide-react";
+import { Loader2, RotateCw, Wand2, BadgeCheck, HandHeart, Hammer } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-const formSchema = z.object({
-  productDescription: z.string().min(10, "Please provide a detailed product description."),
-  originalPrice: z.coerce.number().min(0, "Price must be a positive number."),
-  returnReason: z.string().min(10, "Please provide a reason for the return."),
-  localDemand: z.string().min(10, "Please describe local demand."),
-  costEffectivenessFactors: z.string().min(10, "Please describe cost factors."),
-  photoDataUri: z.string().optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 export default function ReturnRouterPage() {
   const [disposition, setDisposition] = useState<ReturnRouterOutput | null>(null);
-  const [isLoading, setIsLoading] =useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const { toast } = useToast();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-        productDescription: "A 55-inch 4K Smart TV, model XYZ. Minor cosmetic scratches on the bezel. Powers on and functions correctly.",
-        originalPrice: 799.99,
-        returnReason: "Customer purchased a larger model and returned this one within the return period.",
-        localDemand: "High demand for used electronics in good condition in this area.",
-        costEffectivenessFactors: "Low logistics cost to a nearby resale partner. Warehousing space is available.",
-    }
-  });
+  const returnedItems = useMemo(() => {
+    return inventoryData.filter(item => item.returnInfo);
+  }, []);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        form.setValue('photoDataUri', result);
-        setPreview(result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    setIsLoading(true);
+  const handleItemSelect = async (item: InventoryItem) => {
+    setSelectedItem(item);
     setDisposition(null);
+    setIsLoading(true);
     try {
-      const result = await returnRouter(data);
-      setDisposition(result);
+      const reader = new FileReader();
+      const imageBlob = await fetch(item.imageUrl).then(res => res.blob());
+      reader.readAsDataURL(imageBlob);
+      reader.onloadend = async () => {
+        const photoDataUri = reader.result as string;
+        const input: ReturnRouterInput = {
+          productDescription: `${item.description}. Condition: ${item.returnInfo?.condition}.`,
+          originalPrice: item.originalPrice,
+          returnReason: item.returnInfo?.returnReason || 'No reason provided',
+          localDemand: item.marketData.localDemand,
+          costEffectivenessFactors: item.marketData.costEffectivenessFactors,
+          photoDataUri: photoDataUri,
+        };
+        const result = await returnRouter(input);
+        setDisposition(result);
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error("Error fetching return disposition:", error);
       toast({
@@ -70,11 +51,10 @@ export default function ReturnRouterPage() {
         description: "Failed to determine disposition. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
-  
+
   const DispositionIcon = ({ type }: { type: string | undefined }) => {
     switch (type) {
       case 'resale': return <BadgeCheck className="h-10 w-10 text-green-500" />;
@@ -85,73 +65,58 @@ export default function ReturnRouterPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <Card>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      <Card className="lg:col-span-1">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><RotateCw className="text-accent"/>Intelligent Return Router</CardTitle>
+          <CardTitle>Select a Returned Item</CardTitle>
           <CardDescription>
-            Transform your reverse logistics. Our AI-powered engine analyzes returned items to determine the most profitable and sustainable disposition—resale, donation, or liquidation—to maximize value recovery.
+            Choose an item from the returns queue to process.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="productDescription">Product & Condition Assessment</Label>
-              <Textarea id="productDescription" {...form.register("productDescription")} placeholder="e.g., Condition, model, defects" />
-              {form.formState.errors.productDescription && <p className="text-sm text-destructive">{form.formState.errors.productDescription.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="originalPrice">Original Retail Price ($)</Label>
-              <Input id="originalPrice" type="number" step="0.01" {...form.register("originalPrice")} placeholder="e.g., 49.99" />
-              {form.formState.errors.originalPrice && <p className="text-sm text-destructive">{form.formState.errors.originalPrice.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="returnReason">Customer Return Reason</Label>
-              <Textarea id="returnReason" {...form.register("returnReason")} placeholder="e.g., Wrong size, unwanted gift" />
-              {form.formState.errors.returnReason && <p className="text-sm text-destructive">{form.formState.errors.returnReason.message}</p>}
-            </div>
-             <div className="space-y-2">
-              <Label htmlFor="localDemand">Local Market Demand</Label>
-              <Textarea id="localDemand" {...form.register("localDemand")} placeholder="Describe local market conditions..." />
-              {form.formState.errors.localDemand && <p className="text-sm text-destructive">{form.formState.errors.localDemand.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="costEffectivenessFactors">Logistics & Cost Factors</Label>
-              <Textarea id="costEffectivenessFactors" {...form.register("costEffectivenessFactors")} placeholder="Describe logistics, warehousing costs..." />
-              {form.formState.errors.costEffectivenessFactors && <p className="text-sm text-destructive">{form.formState.errors.costEffectivenessFactors.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="photo">Visual Inspection (Optional)</Label>
-              <Input id="photo" type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
-              <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
-                <UploadCloud className="mr-2 h-4 w-4"/> Upload Image
-              </Button>
-              {preview && (
-                  <div className="relative mt-2 w-48 h-48">
-                    <Image src={preview} alt="Product preview" layout="fill" objectFit="cover" className="rounded-md border" />
-                    <Button variant="destructive" size="icon" className="absolute top-1 right-1 h-6 w-6" onClick={() => { setPreview(null); form.setValue("photoDataUri", undefined); if(fileInputRef.current) fileInputRef.current.value = ""; }}>
-                      <X className="h-4 w-4"/>
-                    </Button>
+          <ScrollArea className="h-[600px] pr-4">
+            <div className="space-y-4">
+              {returnedItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleItemSelect(item)}
+                  disabled={isLoading}
+                  className={cn(
+                    "w-full text-left p-4 rounded-lg border transition-all disabled:opacity-50",
+                    selectedItem?.id === item.id
+                      ? "bg-secondary ring-2 ring-primary"
+                      : "hover:bg-secondary/80"
+                  )}
+                >
+                  <div className="flex items-start gap-4">
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.name}
+                      width={64}
+                      height={64}
+                      className="rounded-md"
+                      data-ai-hint={item.dataAiHint}
+                    />
+                    <div className="flex-1">
+                      <p className="font-semibold">{item.name}</p>
+                      <p className="text-sm text-muted-foreground">{item.sku}</p>
+                      <p className="text-sm text-muted-foreground">Condition: {item.returnInfo?.condition}</p>
+                    </div>
                   </div>
-              )}
+                </button>
+              ))}
             </div>
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Wand2 className="mr-2 h-4 w-4" />
-              )}
-              Determine Optimal Route
-            </Button>
-          </form>
+          </ScrollArea>
         </CardContent>
       </Card>
 
-      <div className="sticky top-24">
+      <div className="lg:col-span-2 sticky top-24">
         <Card className="min-h-[500px]">
           <CardHeader>
-            <CardTitle>AI Disposition Recommendation</CardTitle>
-            <CardDescription>The optimal routing decision will appear here.</CardDescription>
+            <CardTitle className="flex items-center gap-2"><RotateCw className="text-accent"/>Intelligent Return Router</CardTitle>
+            <CardDescription>
+              {selectedItem ? `Routing analysis for ${selectedItem.name}`: "The optimal routing decision will appear here."}
+            </CardDescription>
           </CardHeader>
           <CardContent className="flex items-center justify-center">
             {isLoading && (
@@ -172,7 +137,7 @@ export default function ReturnRouterPage() {
             {!isLoading && !disposition && (
                 <div className="flex flex-col items-center justify-center h-64 text-center">
                     <DispositionIcon type={undefined} />
-                    <p className="mt-4 text-muted-foreground">Your routing result will be displayed here.</p>
+                    <p className="mt-4 text-muted-foreground">Select a returned item to determine its optimal route.</p>
                 </div>
             )}
           </CardContent>

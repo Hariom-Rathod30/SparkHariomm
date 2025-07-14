@@ -1,51 +1,39 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { dynamicPricer, DynamicPricerOutput } from "@/ai/flows/dynamic-pricer";
+import { useState, useMemo } from "react";
+import Image from "next/image";
+import { dynamicPricer, DynamicPricerOutput, DynamicPricerInput } from "@/ai/flows/dynamic-pricer";
+import { inventoryData, InventoryItem } from "@/lib/inventory-data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { DollarSign, Loader2, Wand2 } from "lucide-react";
-
-const formSchema = z.object({
-  productDescription: z.string().min(10, "Please provide a detailed product description."),
-  cost: z.coerce.number().min(0, "Cost must be a positive number."),
-  competitorPrices: z.string().min(10, "Please describe competitor pricing."),
-  marketTrends: z.string().min(10, "Please describe relevant market trends."),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 export default function DynamicPricerPage() {
   const [recommendation, setRecommendation] = useState<DynamicPricerOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const { toast } = useToast();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      productDescription: "Premium wireless noise-cancelling headphones with Bluetooth 5.0 and 30-hour battery life.",
-      cost: 150.00,
-      competitorPrices: "Similar models from Sony and Bose are priced between $299 and $349.",
-      marketTrends: "Increased demand for high-fidelity audio equipment and work-from-home accessories.",
-    }
-  });
+  const inventoryForPricing = useMemo(() => {
+    return inventoryData;
+  }, []);
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    setIsLoading(true);
+  const handleItemSelect = async (item: InventoryItem) => {
+    setSelectedItem(item);
     setRecommendation(null);
+    setIsLoading(true);
     try {
-      const result = await dynamicPricer(data);
+      const input: DynamicPricerInput = {
+        productDescription: item.description,
+        cost: item.cost,
+        originalPrice: item.originalPrice,
+        competitorPrices: item.marketData.competitorPrices,
+        marketTrends: item.marketData.marketTrends,
+      }
+      const result = await dynamicPricer(input);
       setRecommendation(result);
     } catch (error) {
       console.error("Error fetching price recommendation:", error);
@@ -60,55 +48,73 @@ export default function DynamicPricerPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <Card>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      <Card className="lg:col-span-1">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><DollarSign className="text-accent" />Dynamic Pricing Engine</CardTitle>
+          <CardTitle>Select a Product for Pricing</CardTitle>
           <CardDescription>
-            Unlock optimal pricing strategies. Our AI analyzes competitor data, market trends, and product costs to recommend prices that maximize revenue and maintain a competitive edge.
+            Choose a product from the live inventory feed to analyze.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="productDescription">Product Description</Label>
-              <Textarea id="productDescription" {...register("productDescription")} placeholder="e.g., Model, features, condition..." />
-              {errors.productDescription && <p className="text-sm text-destructive">{errors.productDescription.message}</p>}
+          <ScrollArea className="h-[600px] pr-4">
+            <div className="space-y-4">
+              {inventoryForPricing.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleItemSelect(item)}
+                  disabled={isLoading}
+                  className={cn(
+                    "w-full text-left p-4 rounded-lg border transition-all disabled:opacity-50",
+                    selectedItem?.id === item.id
+                      ? "bg-secondary ring-2 ring-primary"
+                      : "hover:bg-secondary/80"
+                  )}
+                >
+                  <div className="flex items-start gap-4">
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.name}
+                      width={64}
+                      height={64}
+                      className="rounded-md"
+                      data-ai-hint={item.dataAiHint}
+                    />
+                    <div className="flex-1">
+                      <p className="font-semibold">{item.name}</p>
+                      <p className="text-sm text-muted-foreground">{item.sku}</p>
+                      <p className="text-sm text-muted-foreground">Cost: ${item.cost.toFixed(2)}</p>
+                    </div>
+                  </div>
+                </button>
+              ))}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="cost">Product Cost ($)</Label>
-              <Input id="cost" type="number" step="0.01" {...register("cost")} placeholder="e.g., 150.00" />
-              {errors.cost && <p className="text-sm text-destructive">{errors.cost.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="competitorPrices">Competitor Pricing Landscape</Label>
-              <Textarea id="competitorPrices" {...register("competitorPrices")} placeholder="e.g., Sony at $299, Bose at $349" />
-              {errors.competitorPrices && <p className="text-sm text-destructive">{errors.competitorPrices.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="marketTrends">Relevant Market Trends</Label>
-              <Textarea id="marketTrends" {...register("marketTrends")} placeholder="e.g., Rising demand for WFH tech" />
-              {errors.marketTrends && <p className="text-sm text-destructive">{errors.marketTrends.message}</p>}
-            </div>
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Wand2 className="mr-2 h-4 w-4" />
-              )}
-              Generate Price Recommendation
-            </Button>
-          </form>
+          </ScrollArea>
         </CardContent>
       </Card>
 
-      <div className="sticky top-24">
+      <div className="lg:col-span-2 sticky top-24">
         <Card className="min-h-[500px]">
           <CardHeader>
-            <CardTitle>AI-Powered Price Recommendation</CardTitle>
-            <CardDescription>The optimal, data-driven price will appear here.</CardDescription>
+            <CardTitle className="flex items-center gap-2"><DollarSign className="text-accent" />Dynamic Pricing Engine</CardTitle>
+            <CardDescription>
+              {selectedItem ? `Pricing analysis for ${selectedItem.name}` : "The optimal, data-driven price will appear here."}
+            </CardDescription>
           </CardHeader>
           <CardContent>
+            {(isLoading || recommendation) && (
+              <div className="bg-secondary/50 p-4 rounded-lg mb-6">
+                <h3 className="font-semibold text-lg mb-2">Analysis Input</h3>
+                {selectedItem && (
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                    <p><span className="font-medium text-muted-foreground">Product Cost:</span> ${selectedItem.cost.toFixed(2)}</p>
+                    <p><span className="font-medium text-muted-foreground">Original Price:</span> ${selectedItem.originalPrice.toFixed(2)}</p>
+                    <p className="col-span-2"><span className="font-medium text-muted-foreground">Competitor Prices:</span> {selectedItem.marketData.competitorPrices}</p>
+                    <p className="col-span-2"><span className="font-medium text-muted-foreground">Market Trends:</span> {selectedItem.marketData.marketTrends}</p>
+                  </div>
+                )}
+              </div>
+            )}
             {isLoading && (
               <div className="flex flex-col items-center justify-center h-64 space-y-4">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -130,7 +136,7 @@ export default function DynamicPricerPage() {
             {!isLoading && !recommendation && (
                 <div className="flex flex-col items-center justify-center h-64 text-center">
                     <Wand2 className="h-12 w-12 text-muted-foreground/50" />
-                    <p className="mt-4 text-muted-foreground">Your price recommendation will be displayed here.</p>
+                    <p className="mt-4 text-muted-foreground">Select a product to generate a price recommendation.</p>
                 </div>
             )}
           </CardContent>

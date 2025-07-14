@@ -16,6 +16,7 @@ const DynamicPricerInputSchema = z.object({
   cost: z.number().describe('Cost of the product.'),
   competitorPrices: z.string().describe('A summary of competitor prices for similar products.'),
   marketTrends: z.string().describe('Current market trends relevant to the product category.'),
+  originalPrice: z.number().describe('The original selling price of the product.'),
 });
 export type DynamicPricerInput = z.infer<typeof DynamicPricerInputSchema>;
 
@@ -38,6 +39,7 @@ const prompt = ai.definePrompt({
 Analyze the following information to determine a suggested price that balances competitiveness and profitability.
 
 Product Description: {{{productDescription}}}
+Original Price: \${{{originalPrice}}}
 Product Cost: \${{{cost}}}
 Competitor Prices: {{{competitorPrices}}}
 Market Trends: {{{marketTrends}}}

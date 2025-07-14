@@ -1,4 +1,3 @@
-// src/ai/flows/return-router.ts
 'use server';
 /**
  * @fileOverview AI-powered return routing flow.
@@ -52,7 +51,7 @@ Cost Effectiveness Factors: {{{costEffectivenessFactors}}}
 Product Photo: {{media url=photoDataUri}}
 {{/if}}
 
-Based on this information, recommend a disposition (resale, donation, or liquidation) and explain your reasoning.`,
+Based on this information, recommend a disposition (resale, donation, or liquidation) and explain your reasoning. The reasoning should be concise and no more than 40 words.`,
 });
 
 const returnRouterFlow = ai.defineFlow(
