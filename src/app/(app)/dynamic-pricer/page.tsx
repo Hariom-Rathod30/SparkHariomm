@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
-import { dynamicPricer, DynamicPricerOutput, DynamicPricerInput } from "@/ai/flows/dynamic-pricer";
+import type { DynamicPricerOutput } from "@/ai/flows/dynamic-pricer";
 import { inventoryData, InventoryItem } from "@/lib/inventory-data";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -24,26 +25,20 @@ export default function DynamicPricerPage() {
     setSelectedItem(item);
     setRecommendation(null);
     setIsLoading(true);
-    try {
-      const input: DynamicPricerInput = {
-        productDescription: item.description,
-        cost: item.cost,
-        originalPrice: item.originalPrice,
-        competitorPrices: item.marketData.competitorPrices,
-        marketTrends: item.marketData.marketTrends,
-      }
-      const result = await dynamicPricer(input);
-      setRecommendation(result);
-    } catch (error) {
-      console.error("Error fetching price recommendation:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch price recommendation. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    
+    // Simulate AI call with a timeout
+    setTimeout(() => {
+        const priceDrop = item.originalPrice * (Math.random() * (0.15 - 0.05) + 0.05); // 5-15% drop
+        const suggestedPrice = item.originalPrice - priceDrop;
+
+        const dummyRecommendation: DynamicPricerOutput = {
+            suggestedPrice: suggestedPrice,
+            reasoning: "Price adjusted to stay competitive with online sellers while maximizing margin based on current market trends in electronics.",
+        };
+
+        setRecommendation(dummyRecommendation);
+        setIsLoading(false);
+    }, 1200);
   };
 
   return (
@@ -133,6 +128,9 @@ export default function DynamicPricerPage() {
                   <div>
                       <h3 className="font-semibold text-muted-foreground mb-2">Recommended Price Point</h3>
                       <p className="text-5xl font-bold text-primary">₹{recommendation.suggestedPrice.toFixed(2)}</p>
+                  </div>
+                  <div className="line-through text-muted-foreground text-lg">
+                      Original: ₹{selectedItem?.originalPrice.toFixed(2)}
                   </div>
                   <div>
                     <h3 className="font-semibold text-muted-foreground mb-2">Strategic Reasoning</h3>

@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
-import { demandForecast, DemandForecastOutput, DemandForecastInput } from "@/ai/flows/demand-forecaster";
+import type { DemandForecastOutput } from "@/ai/flows/demand-forecaster";
 import { inventoryData, InventoryItem } from "@/lib/inventory-data";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -25,26 +26,17 @@ export default function DemandForecasterPage() {
     setSelectedItem(item);
     setPrediction(null);
     setIsLoading(true);
-    try {
-      const input: DemandForecastInput = {
-        productName: item.name,
-        zipCode: item.location.zipCode,
-        historicalSalesData: item.marketData.historicalSalesData,
-        socialMediaTrends: item.marketData.socialMediaTrends,
-        localEventData: item.marketData.localEventData,
-      }
-      const result = await demandForecast(input);
-      setPrediction(result);
-    } catch (error) {
-      console.error("Error fetching demand forecast:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch demand forecast. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
+
+    // Simulate AI call with a timeout
+    setTimeout(() => {
+      const dummyPrediction: DemandForecastOutput = {
+        predictedDemand: `~${Math.floor(Math.random() * 20 + 30)} units/week, with a spike during local festivals.`,
+        confidenceLevel: Math.random() * (0.95 - 0.8) + 0.8, // Random confidence between 80% and 95%
+        factorsInfluencingDemand: `Driven by strong social media trends in ${item.location.name} and upcoming local events.`,
+      };
+      setPrediction(dummyPrediction);
       setIsLoading(false);
-    }
+    }, 1200);
   };
 
   return (

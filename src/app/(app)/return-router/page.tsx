@@ -1,10 +1,10 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
-import { returnRouter, ReturnRouterOutput, ReturnRouterInput } from "@/ai/flows/return-router";
+import type { ReturnRouterOutput } from "@/ai/flows/return-router";
 import { inventoryData, InventoryItem } from "@/lib/inventory-data";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, RotateCw, Wand2, BadgeCheck, HandHeart, Hammer } from "lucide-react";
@@ -26,28 +26,24 @@ export default function ReturnRouterPage() {
     setSelectedItem(item);
     setDisposition(null);
     setIsLoading(true);
-    try {
-        const input: ReturnRouterInput = {
-          productDescription: `${item.description}. Condition: ${item.returnInfo?.condition}.`,
-          originalPrice: item.originalPrice,
-          returnReason: item.returnInfo?.returnReason || 'No reason provided',
-          localDemand: item.marketData.localDemand,
-          costEffectivenessFactors: item.marketData.costEffectivenessFactors,
-          // The image is now handled by the AI flow if needed, or not at all.
-          // We can pass the URL directly if the model supports it, but for now we'll omit it for stability.
+    
+    // Simulate AI call with a timeout
+    setTimeout(() => {
+        const dummyDisposition: ReturnRouterOutput = {
+            disposition: 'resale',
+            reasoning: 'Item is in like-new condition and local demand is high. Recommend for immediate resale at 90% of original price.',
         };
-        const result = await returnRouter(input);
-        setDisposition(result);
-    } catch (error) {
-      console.error("Error fetching return disposition:", error);
-      toast({
-        title: "Error",
-        description: "Failed to determine disposition. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+        // A bit of logic to make it more dynamic for the demo
+        if (item.returnInfo?.condition === 'Used - Good') {
+            dummyDisposition.disposition = 'resale';
+            dummyDisposition.reasoning = 'Minor cosmetic wear but fully functional. High local demand justifies resale at a discounted price.';
+        } else if (item.returnInfo?.condition === 'Damaged') {
+            dummyDisposition.disposition = 'liquidation';
+            dummyDisposition.reasoning = 'Significant damage reported. Liquidation is the most cost-effective path to recover value.';
+        }
+        setDisposition(dummyDisposition);
+        setIsLoading(false);
+    }, 1200);
   };
 
   const DispositionIcon = ({ type }: { type: string | undefined }) => {
