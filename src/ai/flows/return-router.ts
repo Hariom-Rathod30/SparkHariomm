@@ -20,7 +20,7 @@ const ReturnRouterInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
-      "A photo of the returned product, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'"
+      "An optional photo of the returned product, as a data URI."
     ).optional(),
 });
 export type ReturnRouterInput = z.infer<typeof ReturnRouterInputSchema>;
@@ -39,7 +39,7 @@ const prompt = ai.definePrompt({
   name: 'returnRouterPrompt',
   input: {schema: ReturnRouterInputSchema},
   output: {schema: ReturnRouterOutputSchema},
-  prompt: `You are an expert in reverse logistics, tasked with determining the best course of action for returned items. Analyze the product description, return reason, local demand, and cost-effectiveness factors to decide whether the item should be resold, donated, or liquidated. Provide a clear explanation for your decision.
+  prompt: `You are an expert in reverse logistics for the Indian retail market, tasked with determining the best course of action for returned items. Analyze the product description, return reason, local demand, and cost-effectiveness factors to decide whether the item should be resold, donated, or liquidated. Provide a clear explanation for your decision.
 
 Product Description: {{{productDescription}}}
 Original Price: {{{originalPrice}}}
