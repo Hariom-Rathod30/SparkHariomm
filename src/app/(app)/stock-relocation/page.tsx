@@ -112,17 +112,17 @@ export default function StockRelocationPage() {
   return (
     <div className="space-y-8">
        <div>
-        <h1 className="text-3xl font-bold font-headline tracking-tight">Smart Stock Relocation</h1>
+        <h1 className="text-3xl font-bold font-headline tracking-tight">Intelligent Stock Balancing</h1>
         <p className="text-muted-foreground mt-1">
-          Dynamically relocate stock based on real-time demand data and optimized routing.
+          Proactively move inventory to where it's needed most. Our system identifies demand spikes and overstock situations, automating relocation orders to optimize availability and reduce holding costs.
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Relocation Orders</CardTitle>
+          <CardTitle>AI-Generated Relocation Orders</CardTitle>
           <CardDescription>
-            A list of pending and active stock relocation tasks.
+            A prioritized list of stock movements to meet predicted demand and prevent stockouts.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -132,7 +132,7 @@ export default function StockRelocationPage() {
                 <TableHead>Item</TableHead>
                 <TableHead className="hidden md:table-cell">Qty</TableHead>
                 <TableHead>Route</TableHead>
-                <TableHead className="hidden sm:table-cell">Reason</TableHead>
+                <TableHead className="hidden sm:table-cell">Trigger</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>

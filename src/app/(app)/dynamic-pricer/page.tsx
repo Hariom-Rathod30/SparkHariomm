@@ -65,7 +65,7 @@ export default function DynamicPricerPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><DollarSign className="text-accent" />Dynamic Pricing Engine</CardTitle>
           <CardDescription>
-            Leverage AI to analyze market data and recommend optimal product prices to maximize revenue.
+            Unlock optimal pricing strategies. Our AI analyzes competitor data, market trends, and product costs to recommend prices that maximize revenue and maintain a competitive edge.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -81,12 +81,12 @@ export default function DynamicPricerPage() {
               {errors.cost && <p className="text-sm text-destructive">{errors.cost.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="competitorPrices">Competitor Prices</Label>
+              <Label htmlFor="competitorPrices">Competitor Pricing Landscape</Label>
               <Textarea id="competitorPrices" {...register("competitorPrices")} placeholder="e.g., Sony at $299, Bose at $349" />
               {errors.competitorPrices && <p className="text-sm text-destructive">{errors.competitorPrices.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="marketTrends">Market Trends</Label>
+              <Label htmlFor="marketTrends">Relevant Market Trends</Label>
               <Textarea id="marketTrends" {...register("marketTrends")} placeholder="e.g., Rising demand for WFH tech" />
               {errors.marketTrends && <p className="text-sm text-destructive">{errors.marketTrends.message}</p>}
             </div>
@@ -96,7 +96,7 @@ export default function DynamicPricerPage() {
               ) : (
                 <Wand2 className="mr-2 h-4 w-4" />
               )}
-              Recommend Price
+              Generate Price Recommendation
             </Button>
           </form>
         </CardContent>
@@ -105,8 +105,8 @@ export default function DynamicPricerPage() {
       <div className="sticky top-24">
         <Card className="min-h-[500px]">
           <CardHeader>
-            <CardTitle>AI Recommendation</CardTitle>
-            <CardDescription>The AI-powered price suggestion will appear here.</CardDescription>
+            <CardTitle>AI-Powered Price Recommendation</CardTitle>
+            <CardDescription>The optimal, data-driven price will appear here.</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading && (
@@ -118,11 +118,11 @@ export default function DynamicPricerPage() {
             {recommendation && (
               <div className="space-y-6 animate-in fade-in-50 text-center">
                 <div>
-                    <h3 className="font-semibold text-muted-foreground mb-2">Suggested Price</h3>
+                    <h3 className="font-semibold text-muted-foreground mb-2">Recommended Price Point</h3>
                     <p className="text-5xl font-bold text-primary">${recommendation.suggestedPrice.toFixed(2)}</p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-muted-foreground mb-2">Reasoning</h3>
+                  <h3 className="font-semibold text-muted-foreground mb-2">Strategic Reasoning</h3>
                   <p className="text-card-foreground/90">{recommendation.reasoning}</p>
                 </div>
               </div>

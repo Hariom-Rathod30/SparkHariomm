@@ -64,15 +64,15 @@ export default function DemandForecasterPage() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><BrainCircuit className="text-accent" />Demand Forecaster</CardTitle>
+          <CardTitle className="flex items-center gap-2"><BrainCircuit className="text-accent" />Predictive Demand Intelligence</CardTitle>
           <CardDescription>
-            Predict neighborhood-level demand to optimize micro-inventory and reduce stockouts.
+            Go beyond historical data. Our AI analyzes local trends and events to deliver hyper-accurate, neighborhood-level demand forecasts, minimizing stockouts and maximizing sales opportunities.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="zipCode">Zip Code</Label>
+              <Label htmlFor="zipCode">Target Zip Code</Label>
               <Input id="zipCode" {...register("zipCode")} placeholder="e.g., 90210" />
               {errors.zipCode && <p className="text-sm text-destructive">{errors.zipCode.message}</p>}
             </div>
@@ -82,13 +82,13 @@ export default function DemandForecasterPage() {
               {errors.historicalSalesData && <p className="text-sm text-destructive">{errors.historicalSalesData.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="socialMediaTrends">Social Media Trends</Label>
-              <Textarea id="socialMediaTrends" {...register("socialMediaTrends")} placeholder="Describe relevant social media trends..." />
+              <Label htmlFor="socialMediaTrends">Social & Market Signals</Label>
+              <Textarea id="socialMediaTrends" {...register("socialMediaTrends")} placeholder="e.g., Viral trends, competitor actions..." />
               {errors.socialMediaTrends && <p className="text-sm text-destructive">{errors.socialMediaTrends.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="localEventData">Local Event Data</Label>
-              <Textarea id="localEventData" {...register("localEventData")} placeholder="Describe upcoming local events..." />
+              <Label htmlFor="localEventData">Local Event Impact</Label>
+              <Textarea id="localEventData" {...register("localEventData")} placeholder="e.g., Festivals, holidays, community events..." />
               {errors.localEventData && <p className="text-sm text-destructive">{errors.localEventData.message}</p>}
             </div>
             <Button type="submit" disabled={isLoading} className="w-full">
@@ -97,7 +97,7 @@ export default function DemandForecasterPage() {
               ) : (
                 <Wand2 className="mr-2 h-4 w-4" />
               )}
-              Forecast Demand
+              Generate Forecast
             </Button>
           </form>
         </CardContent>
@@ -106,8 +106,8 @@ export default function DemandForecasterPage() {
       <div className="sticky top-24">
         <Card className="min-h-[500px]">
           <CardHeader>
-            <CardTitle>AI Prediction</CardTitle>
-            <CardDescription>The AI-powered forecast will appear here.</CardDescription>
+            <CardTitle>AI-Generated Forecast</CardTitle>
+            <CardDescription>Real-time predictive insights will appear here.</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading && (
@@ -123,7 +123,7 @@ export default function DemandForecasterPage() {
                   <p className="text-2xl font-bold text-primary">{prediction.predictedDemand}</p>
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-2">Confidence Level</h3>
+                  <h3 className="font-semibold mb-2">Confidence Score</h3>
                   <div className="flex items-center gap-4">
                     <Progress value={prediction.confidenceLevel * 100} className="w-full" />
                     <span className="font-bold text-lg text-primary">
@@ -132,7 +132,7 @@ export default function DemandForecasterPage() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-2">Influencing Factors</h3>
+                  <h3 className="font-semibold mb-2">Key Demand Drivers</h3>
                   <p className="text-muted-foreground">{prediction.factorsInfluencingDemand}</p>
                 </div>
               </div>

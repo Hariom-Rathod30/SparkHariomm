@@ -82,7 +82,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 md:gap-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Inventory</CardTitle>
+            <CardTitle className="text-sm font-medium">Unified Inventory Command</CardTitle>
             <Boxes className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -92,7 +92,7 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Inventory Value</CardTitle>
+            <CardTitle className="text-sm font-medium">Real-time Asset Valuation</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -102,7 +102,7 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Items Returned</CardTitle>
+            <CardTitle className="text-sm font-medium">Seamless Returns Management</CardTitle>
             <Recycle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -112,7 +112,7 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Stockouts</CardTitle>
+            <CardTitle className="text-sm font-medium">Proactive Stockout Prevention</CardTitle>
             <PackageOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -124,8 +124,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-5 md:gap-8">
         <Card className="md:col-span-3">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><LineChartIcon className="h-5 w-5 text-accent"/>Demand Forecast</CardTitle>
-            <CardDescription>Monthly demand forecast for key product categories.</CardDescription>
+            <CardTitle className="flex items-center gap-2"><LineChartIcon className="h-5 w-5 text-accent"/>Predictive Demand Intelligence</CardTitle>
+            <CardDescription>Anticipate market shifts with hyper-local demand forecasting, ensuring the right product is always at the right place.</CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -141,8 +141,8 @@ export default function DashboardPage() {
         </Card>
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><PieChartIcon className="h-5 w-5 text-accent"/>Return Status</CardTitle>
-            <CardDescription>Disposition of returned items.</CardDescription>
+            <CardTitle className="flex items-center gap-2"><PieChartIcon className="h-5 w-5 text-accent"/>Optimized Reverse Logistics</CardTitle>
+            <CardDescription>Transform returns into revenue with intelligent disposition, maximizing value from every item.</CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -163,8 +163,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Truck className="h-5 w-5 text-accent"/>Recent Stock Relocations</CardTitle>
-            <CardDescription>Dynamic stock movements based on demand.</CardDescription>
+            <CardTitle className="flex items-center gap-2"><Truck className="h-5 w-5 text-accent"/>Intelligent Stock Balancing</CardTitle>
+            <CardDescription>Automate stock relocations based on predictive analytics, preventing stockouts and reducing overstock.</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -197,8 +197,8 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Info className="h-5 w-5 text-accent"/>Alerts</CardTitle>
-            <CardDescription>Important notifications about your inventory.</CardDescription>
+            <CardTitle className="flex items-center gap-2"><Info className="h-5 w-5 text-accent"/>Actionable Insights Engine</CardTitle>
+            <CardDescription>Receive real-time alerts for critical inventory events, enabling immediate, data-driven action.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
               <Alert>

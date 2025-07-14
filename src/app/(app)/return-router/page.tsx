@@ -88,40 +88,40 @@ export default function ReturnRouterPage() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><RotateCw className="text-accent"/>Return Router</CardTitle>
+          <CardTitle className="flex items-center gap-2"><RotateCw className="text-accent"/>Intelligent Return Router</CardTitle>
           <CardDescription>
-            Determine optimal disposition of returned items using AI to maximize value and sustainability.
+            Transform your reverse logistics. Our AI-powered engine analyzes returned items to determine the most profitable and sustainable disposition—resale, donation, or liquidation—to maximize value recovery.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="productDescription">Product Description</Label>
+              <Label htmlFor="productDescription">Product & Condition Assessment</Label>
               <Textarea id="productDescription" {...form.register("productDescription")} placeholder="e.g., Condition, model, defects" />
               {form.formState.errors.productDescription && <p className="text-sm text-destructive">{form.formState.errors.productDescription.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="originalPrice">Original Price ($)</Label>
+              <Label htmlFor="originalPrice">Original Retail Price ($)</Label>
               <Input id="originalPrice" type="number" step="0.01" {...form.register("originalPrice")} placeholder="e.g., 49.99" />
               {form.formState.errors.originalPrice && <p className="text-sm text-destructive">{form.formState.errors.originalPrice.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="returnReason">Return Reason</Label>
+              <Label htmlFor="returnReason">Customer Return Reason</Label>
               <Textarea id="returnReason" {...form.register("returnReason")} placeholder="e.g., Wrong size, unwanted gift" />
               {form.formState.errors.returnReason && <p className="text-sm text-destructive">{form.formState.errors.returnReason.message}</p>}
             </div>
              <div className="space-y-2">
-              <Label htmlFor="localDemand">Local Demand</Label>
+              <Label htmlFor="localDemand">Local Market Demand</Label>
               <Textarea id="localDemand" {...form.register("localDemand")} placeholder="Describe local market conditions..." />
               {form.formState.errors.localDemand && <p className="text-sm text-destructive">{form.formState.errors.localDemand.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="costEffectivenessFactors">Cost-Effectiveness Factors</Label>
+              <Label htmlFor="costEffectivenessFactors">Logistics & Cost Factors</Label>
               <Textarea id="costEffectivenessFactors" {...form.register("costEffectivenessFactors")} placeholder="Describe logistics, warehousing costs..." />
               {form.formState.errors.costEffectivenessFactors && <p className="text-sm text-destructive">{form.formState.errors.costEffectivenessFactors.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="photo">Product Photo (Optional)</Label>
+              <Label htmlFor="photo">Visual Inspection (Optional)</Label>
               <Input id="photo" type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
               <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
                 <UploadCloud className="mr-2 h-4 w-4"/> Upload Image
@@ -141,7 +141,7 @@ export default function ReturnRouterPage() {
               ) : (
                 <Wand2 className="mr-2 h-4 w-4" />
               )}
-              Route Item
+              Determine Optimal Route
             </Button>
           </form>
         </CardContent>
@@ -150,14 +150,14 @@ export default function ReturnRouterPage() {
       <div className="sticky top-24">
         <Card className="min-h-[500px]">
           <CardHeader>
-            <CardTitle>AI Recommendation</CardTitle>
-            <CardDescription>The AI-powered routing decision will appear here.</CardDescription>
+            <CardTitle>AI Disposition Recommendation</CardTitle>
+            <CardDescription>The optimal routing decision will appear here.</CardDescription>
           </CardHeader>
           <CardContent className="flex items-center justify-center">
             {isLoading && (
               <div className="flex flex-col items-center justify-center h-64 space-y-4">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                <p className="text-muted-foreground">Routing item...</p>
+                <p className="text-muted-foreground">Analyzing disposition paths...</p>
               </div>
             )}
             {disposition && (
