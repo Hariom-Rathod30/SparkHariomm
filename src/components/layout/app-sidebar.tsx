@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   BrainCircuit,
+  DollarSign,
   LayoutDashboard,
   RotateCw,
   Truck,
@@ -26,6 +27,7 @@ export function AppSidebar() {
     { href: "/demand-forecaster", label: "Demand Forecaster", icon: BrainCircuit, tooltip: "Demand Forecaster" },
     { href: "/return-router", label: "Return Router", icon: RotateCw, tooltip: "Return Router" },
     { href: "/stock-relocation", label: "Stock Relocation", icon: Truck, tooltip: "Stock Relocation" },
+    { href: "/dynamic-pricer", label: "Dynamic Pricer", icon: DollarSign, tooltip: "Dynamic Pricer" },
   ];
 
   return (
